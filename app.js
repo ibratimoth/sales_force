@@ -26,7 +26,7 @@ app.use(session({
 }));
 
 app.use(cors({
-  origin: 'http://localhost:5173', // your frontend
+  origin: `http://localhost:${process.env.VITE_PORT}`, // your frontend
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
@@ -43,7 +43,7 @@ app.use('/tracking', trackingRoutes); //
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:5173',
+    origin: `http://localhost:${process.env.VITE_PORT}`,
     methods: ['GET', 'POST'],
     credentials: true
   }
