@@ -22,14 +22,20 @@ app.use(session({
   secret: process.env.JWT_SECRET,
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: false, maxAge: 1000 * 60 * 60 * 24 }
+  cookie: {
+    httpOnly: true,        // prevents JS from reading the cookie
+    secure: true,         // true if HTTPS
+    sameSite: 'none',      
+    maxAge: 1000 * 60 * 60 * 24
+  }
 }));
 
 app.use(cors({
-  origin: `http://localhost:${process.env.VITE_PORT}`, // your frontend
+  origin: `https://salesforce.rigel.co.tz`, // your frontend
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
+
 
 // ------------------ ROUTES ------------------
 app.get('/', (req, res) => res.send('It is running'));
@@ -43,7 +49,7 @@ app.use('/tracking', trackingRoutes); //
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: `http://localhost:${process.env.VITE_PORT}`,
+    origin: `https://salesforce.rigel.co.tz`,
     methods: ['GET', 'POST'],
     credentials: true
   }
@@ -71,7 +77,7 @@ connectionDB();
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-  console.log(`Server is running at http://localhost:${PORT}`);
+  console.log(`Server is running at https://salesforce.rigel.co.tz`);
 });
 
 module.exports = server;

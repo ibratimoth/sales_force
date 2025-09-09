@@ -7,7 +7,7 @@ const UserServices = new userController();
 const AuthMiddleware = new authMiddleware();
 const AuthController = new authController();
 
-router.get('/user', AuthMiddleware.authToken, UserServices.getAllUsers.bind(UserServices));
+router.get('/user',  UserServices.getAllUsers.bind(UserServices));
 router.post('/user', UserServices.createUser.bind(UserServices));
 router.get('/user/:userId', UserServices.getUserById.bind(UserServices));
 router.put('/user/:userId', UserServices.UpdateUser.bind(UserServices));

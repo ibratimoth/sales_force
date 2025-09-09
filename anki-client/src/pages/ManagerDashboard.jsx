@@ -5,67 +5,61 @@ import io from "socket.io-client";
 import { getAgentsByStatus, getAgentRoute } from "../api";
 import RouteHistoryModal from "../components/RouteHistoryModal";
 
-const API_BASE = "http://localhost:3000";
+const API_BASE = "https://salesforceapi.rigel.co.tz";
 
 export default function ManagerDashboard() {
-  const [tab, setTab] = useState("checkedIn"); // "checkedIn" | "checkedOut"
-  const [agents, setAgents] = useState([]); // all agents
-  const [routes, setRoutes] = useState({}); // { agentId: [[lat,lng], ...] }
+  const [tab, setTab] = useState("checkedIn");
+  const [agents, setAgents] = useState([]);
+  const [routes, setRoutes] = useState({});
   const [selectedAgent, setSelectedAgent] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [loadingRoute, setLoadingRoute] = useState(false); // ✅ new
 
   /** Fetch all agents grouped by status */
-useEffect(() => {
-  const fetchAgents = async () => {
-    try {
-      const { data } = await getAgentsByStatus();
-      if (data.success) {
-        // Combine checkedIn and checkedOut
-        const allRecords = [...data.data.checkedIn, ...data.data.checkedOut];
+  useEffect(() => {
+    const fetchAgents = async () => {
+      try {
+        const { data } = await getAgentsByStatus();
+        if (data.success) {
+          const allRecords = [...data.data.checkedIn, ...data.data.checkedOut];
+          const latestByAgent = {};
 
-        // Create a map to keep the latest record per agent
-        const latestByAgent = {};
+          allRecords.forEach(record => {
+            const agentId = record.agent_id;
+            const existing = latestByAgent[agentId];
 
-        allRecords.forEach(record => {
-          const agentId = record.agent_id;
-          const existing = latestByAgent[agentId];
+            const recordTime = record.checkout_time
+              ? new Date(record.checkout_time).getTime()
+              : new Date(record.checkin_time).getTime();
 
-          // Determine the timestamp to compare: use checkout_time if exists, else checkin_time
-          const recordTime = record.checkout_time
-            ? new Date(record.checkout_time).getTime()
-            : new Date(record.checkin_time).getTime();
+            const existingTime = existing
+              ? existing.checkout_time
+                ? new Date(existing.checkout_time).getTime()
+                : new Date(existing.checkin_time).getTime()
+              : 0;
 
-          const existingTime = existing
-            ? existing.checkout_time
-              ? new Date(existing.checkout_time).getTime()
-              : new Date(existing.checkin_time).getTime()
-            : 0;
+            if (!existing || recordTime > existingTime) {
+              latestByAgent[agentId] = record;
+            }
+          });
 
-          // Keep the latest record
-          if (!existing || recordTime > existingTime) {
-            latestByAgent[agentId] = record;
-          }
-        });
+          const mappedAgents = Object.values(latestByAgent).map(record => ({
+            agentId: record.agent_id,
+            name: `${record.user2.first_name} ${record.user2.last_name}`,
+            checkinTime: record.checkin_time,
+            checkoutTime: record.checkout_time,
+            checkedIn: !record.checkout_time,
+          }));
 
-        // Map latest records to dashboard agent format
-        const mappedAgents = Object.values(latestByAgent).map(record => ({
-          agentId: record.agent_id,
-          name: `${record.user2.first_name} ${record.user2.last_name}`,
-          checkinTime: record.checkin_time,
-          checkoutTime: record.checkout_time,
-          checkedIn: !record.checkout_time, // if checkout_time exists => false, else true
-        }));
-
-        setAgents(mappedAgents);
+          setAgents(mappedAgents);
+        }
+      } catch (err) {
+        console.error("Error fetching agents:", err);
       }
-    } catch (err) {
-      console.error("Error fetching agents:", err);
-    }
-  };
+    };
 
-  fetchAgents();
-}, []);
-
+    fetchAgents();
+  }, []);
 
   /** Socket for live location updates */
   useEffect(() => {
@@ -96,9 +90,10 @@ useEffect(() => {
   /** Open modal for route history */
   const openModal = async agent => {
     setSelectedAgent(agent);
+    setModalOpen(true);
 
     if (!agent.checkedIn) {
-      // Fetch route history for checked-out agents
+      setLoadingRoute(true); // ✅ show loading
       try {
         const { data } = await getAgentRoute(agent.agentId);
         if (data.success) {
@@ -109,13 +104,12 @@ useEffect(() => {
         }
       } catch (err) {
         console.error("Error fetching route:", agent.agentId, err);
+      } finally {
+        setLoadingRoute(false); // ✅ stop loading
       }
     }
-
-    setModalOpen(true);
   };
 
-  /** Agents filtered by selected tab */
   const displayedAgents = agents.filter(a =>
     tab === "checkedIn" ? a.checkedIn : !a.checkedIn
   );
@@ -158,7 +152,7 @@ useEffect(() => {
           )}
           {displayedAgents.map(agent => (
             <li
-              key={agent.agentId + agent.checkinTime} // unique key even if same agent multiple times
+              key={agent.agentId + agent.checkinTime}
               className="cursor-pointer p-3 hover:bg-slate-100 transition"
               onClick={() => openModal(agent)}
             >
@@ -181,6 +175,7 @@ useEffect(() => {
             route={routes[selectedAgent.agentId] || []}
             agent={selectedAgent}
             live={selectedAgent.checkedIn}
+            loading={loadingRoute} // ✅ pass loading
           />
         )}
       </div>

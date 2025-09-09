@@ -12,7 +12,6 @@ L.Icon.Default.mergeOptions({
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
 
-// Helper to move map to latest marker
 function FlyToMarker({ position }) {
   const map = useMap();
   useEffect(() => {
@@ -21,7 +20,7 @@ function FlyToMarker({ position }) {
   return null;
 }
 
-export default function RouteHistoryModal({ open, onClose, route = [], agent, live }) {
+export default function RouteHistoryModal({ open, onClose, route = [], agent, live, loading }) {
   const lastPosition = route.length ? route[route.length - 1] : null;
 
   return (
@@ -33,27 +32,36 @@ export default function RouteHistoryModal({ open, onClose, route = [], agent, li
             {agent.name} ({agent.agentId}) {live ? "📍 Live" : "🗺️ Route History"}
           </Dialog.Title>
 
-          <div className="w-full h-[500px]">
-            <MapContainer
-              center={lastPosition || [0, 0]}
-              zoom={13}
-              style={{ width: "100%", height: "100%" }}
-            >
-              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          <div className="w-full h-[500px] flex items-center justify-center">
+            {loading ? (
+              <div className="flex flex-col items-center space-y-3">
+                {/* Spinner */}
+                <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                <p className="text-slate-500">Loading route...</p>
+              </div>
+            ) : (
+              <MapContainer
+                key={agent.agentId + route.length}
+                center={lastPosition || [0, 0]}
+                zoom={13}
+                style={{ width: "100%", height: "100%" }}
+              >
+                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-              {route.length > 0 && (
-                <>
-                  <Polyline positions={route} color={live ? "green" : "blue"} />
-                  <Marker position={lastPosition} />
-                  <FlyToMarker position={lastPosition} />
-                </>
-              )}
-            </MapContainer>
+                {route.length > 0 && (
+                  <>
+                    <Polyline positions={route} color={live ? "green" : "blue"} />
+                    <Marker position={lastPosition} />
+                    <FlyToMarker position={lastPosition} />
+                  </>
+                )}
+              </MapContainer>
+            )}
           </div>
 
           <div className="mt-4 text-right">
             <button
-              className="px-4 py-2 bg-red-600 text-white rounded-lg"
+              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
               onClick={onClose}
             >
               Close

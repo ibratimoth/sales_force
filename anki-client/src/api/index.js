@@ -1,7 +1,9 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'http://localhost:3000',
+  baseURL: window.location.hostname === 'localhost' 
+           ? 'http://localhost:3000'
+           : 'https://salesforceapi.rigel.co.tz',
   withCredentials: true,
 });
 

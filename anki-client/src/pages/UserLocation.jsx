@@ -5,7 +5,7 @@ import io from "socket.io-client";
 import { checkIn, checkOut, addLocation, isCheckedIn } from "../api";
 import { useSelector } from "react-redux";
 
-const API_BASE = "http://localhost:3000"; // backend base URL
+const API_BASE = "https://salesforceapi.rigel.co.tz"; // backend base URL
 
 export default function AgentPage() {
   const { user } = useSelector((state) => state.auth); // Logged-in user
