@@ -7,26 +7,49 @@ class TrackingController {
     }
 
     /** AGENT CHECK-IN **/
+    /** AGENT CHECK-IN **/
     async checkIn(req, res) {
         try {
             const { agentId } = req.body;
             const result = await this.trackingService.checkIn(agentId);
+
+            // ✅ Emit real-time event
+            if (result.success && req.app.get('io')) {
+                req.app.get('io').emit('agentCheckIn', { agentId });
+            }
+
             return res.status(result.success ? 200 : 400).json(result);
         } catch (err) {
             console.error('Check-in error:', err);
-            return res.status(500).json({ success: false, message: 'Server error during check-in', data: null });
+            return res.status(500).json({
+                success: false,
+                message: 'Server error during check-in',
+                data: null
+            });
         }
     }
 
+
+    /** AGENT CHECK-OUT **/
     /** AGENT CHECK-OUT **/
     async checkOut(req, res) {
         try {
             const { agentId } = req.body;
             const result = await this.trackingService.checkOut(agentId);
+
+            // ✅ Emit real-time event
+            if (result.success && req.app.get('io')) {
+                req.app.get('io').emit('agentCheckOut', { agentId });
+            }
+
             return res.status(result.success ? 200 : 400).json(result);
         } catch (err) {
             console.error('Check-out error:', err);
-            return res.status(500).json({ success: false, message: 'Server error during check-out', data: null });
+            return res.status(500).json({
+                success: false,
+                message: 'Server error during check-out',
+                data: null
+            });
         }
     }
 
@@ -108,6 +131,24 @@ class TrackingController {
                 success: false,
                 message: "Server error fetching agents status",
                 data: { checkedIn: [], checkedOut: [] }
+            });
+        }
+    }
+
+    /** GET /api/tracking/route-history/:agentId?date=YYYY-MM-DD **/
+    async getAgentRouteByDate(req, res) {
+        try {
+            const { agentId, date } = req.params;
+
+            const result = await this.trackingService.getAgentRouteByDate(agentId, date);
+
+            return res.status(result.success ? 200 : 400).json(result);
+        } catch (err) {
+            console.error('Get route error:', err);
+            return res.status(500).json({
+                success: false,
+                message: 'Server error fetching route',
+                data: [],
             });
         }
     }

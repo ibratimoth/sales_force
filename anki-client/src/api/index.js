@@ -37,6 +37,8 @@ export const checkOut = (agentId) => API.post('/tracking/checkout', { agentId })
 export const addLocation = (agentId, lat, lng) =>
   API.post('/tracking/location', { agentId, lat, lng });
 export const getAgentRoute = (agentId) => API.get(`/tracking/location/${agentId}`);
+export const getAgentRouteByDate = (agentId, date) =>
+  API.get(`/tracking/location/${agentId}/${date}`);
 export const getLastLocation = (agentId) => API.get(`/tracking/location/${agentId}/last`);
 export const isCheckedIn = (agentId) => API.get(`/tracking/checkin-status/${agentId}`);
 export const getAgentsByStatus = () => API.get(`/tracking/agents/status`);

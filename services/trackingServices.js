@@ -82,6 +82,16 @@ class TrackingService {
     }
   }
 
+  async getAgentRouteByDate(agentId, date) {
+    try {
+      const route = await this.trackingRepo.getAgentLocationsByDate(agentId, date);
+      return { success: true, message: 'Route fetched', data: route };
+    } catch (err) {
+      console.log(err);
+      return { success: false, message: err.message, data: [] };
+    }
+  }
+
 }
 
 module.exports = TrackingService;

@@ -69,10 +69,13 @@ export default function ManagerDashboard() {
       console.log("Manager connected:", socket.id);
     });
 
+    // 🔹 Live location updates
     socket.on("locationUpdate", ({ agentId, lat, lng, timestamp }) => {
       setAgents(prev =>
         prev.map(a =>
-          a.agentId === agentId ? { ...a, lat, lng, timestamp } : a
+          a.agentId === agentId
+            ? { ...a, lat, lng, timestamp }
+            : a
         )
       );
 
@@ -82,6 +85,60 @@ export default function ManagerDashboard() {
           ? [...prev[agentId], [lat, lng]]
           : [[lat, lng]],
       }));
+    });
+
+    // 🔹 Agent checked in
+    socket.on("agentCheckIn", ({ agentId }) => {
+      setAgents(prev => {
+        const exists = prev.find(a => a.agentId === agentId);
+
+        if (exists) {
+          // ✅ Update existing
+          return prev.map(a =>
+            a.agentId === agentId
+              ? { ...a, checkedIn: true, checkoutTime: null }
+              : a
+          );
+        } else {
+          // ✅ Fetch new agent info and add
+          (async () => {
+            try {
+              const { data } = await getAgentsByStatus();
+              if (data.success) {
+                const record = [...data.data.checkedIn, ...data.data.checkedOut]
+                  .find(r => r.agent_id === agentId);
+
+                if (record) {
+                  const newAgent = {
+                    agentId: record.agent_id,
+                    name: `${record.user2.first_name} ${record.user2.last_name}`,
+                    checkinTime: record.checkin_time,
+                    checkoutTime: record.checkout_time,
+                    checkedIn: !record.checkout_time,
+                  };
+
+                  setAgents(current => [...current, newAgent]);
+                }
+              }
+            } catch (err) {
+              console.error("Error fetching new agent:", err);
+            }
+          })();
+
+          return prev; // temporary return, async will add later
+        }
+      });
+    });
+
+    // 🔹 Agent checked out
+    socket.on("agentCheckOut", ({ agentId }) => {
+      setAgents(prev =>
+        prev.map(a =>
+          a.agentId === agentId
+            ? { ...a, checkedIn: false, checkoutTime: new Date().toISOString() }
+            : a
+        )
+      );
     });
 
     return () => socket.disconnect();
@@ -124,21 +181,19 @@ export default function ManagerDashboard() {
         {/* Tabs */}
         <div className="flex space-x-4 mb-4">
           <button
-            className={`px-4 py-2 rounded-lg ${
-              tab === "checkedIn"
-                ? "bg-blue-600 text-white"
-                : "bg-slate-200 text-slate-700"
-            }`}
+            className={`px-4 py-2 rounded-lg ${tab === "checkedIn"
+              ? "bg-blue-600 text-white"
+              : "bg-slate-200 text-slate-700"
+              }`}
             onClick={() => setTab("checkedIn")}
           >
             Checked In
           </button>
           <button
-            className={`px-4 py-2 rounded-lg ${
-              tab === "checkedOut"
-                ? "bg-blue-600 text-white"
-                : "bg-slate-200 text-slate-700"
-            }`}
+            className={`px-4 py-2 rounded-lg ${tab === "checkedOut"
+              ? "bg-blue-600 text-white"
+              : "bg-slate-200 text-slate-700"
+              }`}
             onClick={() => setTab("checkedOut")}
           >
             Checked Out

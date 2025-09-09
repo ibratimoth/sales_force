@@ -5,6 +5,7 @@ const permissionRelation = require('../models/permissionModel');
 const rolePermissionRelation = require('../models/rolePermisionModel');
 const locationRelation = require('../models/locationModel');
 const attendanceRelation = require('../models/ettendanceModal');
+const agentnoteRelation = require('../models/agentNoteModel');
 
 departmentRelation.hasMany(userRelation, { foreignKey: 'dep_id' });
 userRelation.belongsTo(departmentRelation, { foreignKey: 'dep_id' });
@@ -24,6 +25,9 @@ locationRelation.belongsTo(userRelation, {foreignKey: 'agent_id'});
 userRelation.hasMany(attendanceRelation, {foreignKey: 'agent_id'});
 attendanceRelation.belongsTo(userRelation, {foreignKey: 'agent_id'});
 
+userRelation.hasMany(agentnoteRelation, {foreignKey: 'agent_id'});
+agentnoteRelation.belongsTo(userRelation, {foreignKey: 'agent_id'});
+
 
 module.exports = {
     departmentRelation,
@@ -32,5 +36,6 @@ module.exports = {
     permissionRelation,
     rolePermissionRelation,
     attendanceRelation,
-    locationRelation
+    locationRelation,
+    agentnoteRelation
 }

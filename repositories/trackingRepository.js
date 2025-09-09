@@ -1,6 +1,7 @@
 const Location = require('../models/locationModel');
 const Attendance = require('../models/ettendanceModal');
 const { userRelation } = require('../models/relationship');
+const { Op } = require('sequelize');
 
 class TrackingRepository {
 
@@ -66,7 +67,7 @@ class TrackingRepository {
     async getAgentsByStatus() {
         const checkedIn = await Attendance.findAll({
             where: { checkout_time: null },
-            include: userRelation, 
+            include: userRelation,
             order: [['checkin_time', 'DESC']]
         });
 
@@ -79,6 +80,23 @@ class TrackingRepository {
         return { checkedIn, checkedOut };
     }
 
+    async getAgentLocationsByDate(agentId, date) {
+        const where = { agent_id: agentId };
+
+        if (date) {
+            where.timestamp = {
+                [Op.between]: [
+                    new Date(`${date}T00:00:00.000Z`),
+                    new Date(`${date}T23:59:59.999Z`),
+                ],
+            };
+        }
+
+        return await Location.findAll({
+            where,
+            order: [['timestamp', 'ASC']],
+        });
+    }
 
 }
 

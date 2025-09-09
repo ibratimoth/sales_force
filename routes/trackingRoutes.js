@@ -8,29 +8,30 @@ const authMiddleware = require('../middlewares/authMiddleware');
 const auth = new authMiddleware();
 
 // Agent check-in
-router.post('/checkin',  trackingController.checkIn.bind(trackingController));
+router.post('/checkin', trackingController.checkIn.bind(trackingController));
 
 // Agent check-out
-router.post('/checkout',  trackingController.checkOut.bind(trackingController));
+router.post('/checkout', trackingController.checkOut.bind(trackingController));
 
 // Check if agent is currently checked in
-router.get('/checkin-status/:agentId',  trackingController.isCheckedIn.bind(trackingController));
+router.get('/checkin-status/:agentId', trackingController.isCheckedIn.bind(trackingController));
 
 // Add location (only if agent is checked in)
-router.post('/location',  trackingController.addLocation.bind(trackingController));
+router.post('/location', trackingController.addLocation.bind(trackingController));
 
 // Get all locations (route history) for an agent
-router.get('/location/:agentId',  trackingController.getAgentRoute.bind(trackingController));
+router.get('/location/:agentId', trackingController.getAgentRoute.bind(trackingController));
 
 // Get last known location for an agent
-router.get('/location/:agentId/last',  trackingController.getLastLocation.bind(trackingController));
+router.get('/location/:agentId/last', trackingController.getLastLocation.bind(trackingController));
 
 // Get all checked-in and checked-out agents
 router.get(
     "/agents/status",
-    
     trackingController.getAgentsByStatus.bind(trackingController)
 );
 
+// 🔹 NEW: fetch route for specific date
+router.get('/location/:agentId/:date', trackingController.getAgentRouteByDate.bind(trackingController));
 
 module.exports = router;
