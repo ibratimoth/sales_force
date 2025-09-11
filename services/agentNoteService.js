@@ -48,6 +48,16 @@ class AgentNoteService {
       return { success: false, message: err.message, data: null };
     }
   }
+
+  async getAgentNoteByDate(agentId, date) {
+    try {
+      const route = await agentNoteRepo.getAgentNotesByDate(agentId, date);
+      return { success: true, message: 'Notes fetched', data: route };
+    } catch (err) {
+      console.log(err);
+      return { success: false, message: err.message, data: [] };
+    }
+  }
 }
 
 module.exports = new AgentNoteService();

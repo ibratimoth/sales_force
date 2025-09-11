@@ -8,6 +8,7 @@ const { connectionDB } = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
 const departmentRoutes = require('./routes/departmentsRoutes');
 const trackingRoutes = require('./routes/trackingRoutes');
+const agentRoutes = require('./routes/agentNoteRoutes');
 const http = require('http');
 const { Server } = require('socket.io');
 
@@ -31,7 +32,7 @@ app.use(session({
 }));
 
 app.use(cors({
-  origin: `https://salesforce.rigel.co.tz`, // your frontend
+  origin: `https://salesforce.rigel.co.tz`, 
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
@@ -44,6 +45,7 @@ app.get('/cookies', (req, res) => res.send(req.cookies));
 app.use('/user', userRoutes);
 app.use('/department', departmentRoutes);
 app.use('/tracking', trackingRoutes); // 
+app.use('/agent', agentRoutes); // 
 
 // ------------------ SERVER & SOCKET.IO ------------------
 const server = http.createServer(app);

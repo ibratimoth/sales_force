@@ -1,4 +1,5 @@
 const AgentNote = require('../models/agentNoteModel');
+const { Op } = require('sequelize');
 
 class AgentNoteRepo {
   async createNote({ agentId, lat, lng, locationName, activityDone }) {
@@ -21,6 +22,24 @@ class AgentNoteRepo {
 
   async getNoteById(id) {
     return await AgentNote.findByPk(id);
+  }
+
+  async getAgentNotesByDate(agentId, date) {
+    const where = { agent_id: agentId };
+
+    if (date) {
+      where.timestamp = {
+        [Op.between]: [
+          new Date(`${date}T00:00:00.000Z`),
+          new Date(`${date}T23:59:59.999Z`),
+        ],
+      };
+    }
+
+    return await AgentNote.findAll({
+      where,
+      order: [['timestamp', 'ASC']],
+    });
   }
 
   async updateNote(id, updates) {

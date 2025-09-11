@@ -43,4 +43,10 @@ export const getLastLocation = (agentId) => API.get(`/tracking/location/${agentI
 export const isCheckedIn = (agentId) => API.get(`/tracking/checkin-status/${agentId}`);
 export const getAgentsByStatus = () => API.get(`/tracking/agents/status`);
 
+export const createAgentNote = (data) => API.post('/agent/agent-note', data);
+export const getAgentNotes = (agentId) => API.get(`/agent/agent-note/${agentId}`);
+export const getAgentNote = (id) => API.get(`/agent/agent-note/single/${id}`);
+export const updateAgentNote = (id, data) => API.put(`/agent/agent-note/${id}`, data);
+export const deleteAgentNote = (id) => API.delete(`/agent/agent-note/${id}`);
+
 export default API;

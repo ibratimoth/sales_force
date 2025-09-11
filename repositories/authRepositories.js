@@ -6,7 +6,17 @@ const RolePermission = require('../models/rolePermisionModel');
 class authRepository {
 
     async getAllRole() {
-        return await Role.findAll({ order: [['createdAt', 'DESC']] })
+        return await Role.findAll({ order: [['createdAt', 'DESC']],
+            include: [
+                {
+                    model: RolePermission,
+                    include:[{
+                        model: Permission,
+                        attributes: ['label']
+                    }]
+                }
+            ]
+         })
     };
 
     async getRoleById(id) {
