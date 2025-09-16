@@ -6,6 +6,10 @@ const rolePermissionRelation = require('../models/rolePermisionModel');
 const locationRelation = require('../models/locationModel');
 const attendanceRelation = require('../models/ettendanceModal');
 const agentnoteRelation = require('../models/agentNoteModel');
+const companyRelation = require('../models/companyModel'); 
+const subscriptionplanRelation = require('../models/subscriptionPlanModel'); 
+const subscriptionplanfeatureRelation = require('../models/subscriptionPlanFeatureModel'); 
+const subscriptionRelation = require('../models/subscriptionModel');
 
 departmentRelation.hasMany(userRelation, { foreignKey: 'dep_id' });
 userRelation.belongsTo(departmentRelation, { foreignKey: 'dep_id' });
@@ -28,6 +32,17 @@ attendanceRelation.belongsTo(userRelation, {foreignKey: 'agent_id'});
 userRelation.hasMany(agentnoteRelation, {foreignKey: 'agent_id'});
 agentnoteRelation.belongsTo(userRelation, {foreignKey: 'agent_id'});
 
+companyRelation.hasMany(subscriptionRelation, { foreignKey: 'company_id' });
+subscriptionRelation.belongsTo(companyRelation, { foreignKey: 'company_id' });
+
+// SubscriptionPlan ↔ Subscription
+subscriptionplanRelation.hasMany(subscriptionRelation, { foreignKey: 'plan_id' });
+subscriptionRelation.belongsTo(subscriptionplanRelation, { foreignKey: 'plan_id' });
+
+// subscriptionplanRelation ↔ SubscriptionPlanFeature
+subscriptionplanRelation.hasMany(subscriptionplanfeatureRelation, { foreignKey: 'plan_id' });
+subscriptionplanfeatureRelation.belongsTo(subscriptionplanRelation, { foreignKey: 'plan_id' });
+
 
 module.exports = {
     departmentRelation,
@@ -37,5 +52,9 @@ module.exports = {
     rolePermissionRelation,
     attendanceRelation,
     locationRelation,
-    agentnoteRelation
+    agentnoteRelation,
+    companyRelation,
+    subscriptionRelation,
+    subscriptionplanRelation,
+    subscriptionplanfeatureRelation
 }
