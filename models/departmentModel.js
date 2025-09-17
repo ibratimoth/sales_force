@@ -10,6 +10,7 @@ const Department = sequelize.define('departments1', {
     },
     name: DataTypes.STRING,
     label: DataTypes.STRING,
+    company_id: DataTypes.UUID,
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
 }, {

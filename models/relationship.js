@@ -14,6 +14,12 @@ const subscriptionRelation = require('../models/subscriptionModel');
 departmentRelation.hasMany(userRelation, { foreignKey: 'dep_id' });
 userRelation.belongsTo(departmentRelation, { foreignKey: 'dep_id' });
 
+companyRelation.hasMany(departmentRelation, {foreignKey: 'company_id'});
+departmentRelation.belongsTo(companyRelation, {foreignKey: 'company_id'});
+
+companyRelation.hasMany(userRelation, {foreignKey: 'company_id'});
+userRelation.belongsTo(companyRelation, {foreignKey: 'company_id'});
+
 roleRelation.hasMany(rolePermissionRelation, {foreignKey: 'role_id'});
 rolePermissionRelation.belongsTo(roleRelation, {foreignKey: 'role_id'})
 

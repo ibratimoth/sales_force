@@ -12,6 +12,7 @@ const User = sequelize.define('user2', {
     last_name: DataTypes.STRING,
     email: DataTypes.STRING,
     dep_id: DataTypes.UUID,
+    company_id: DataTypes.UUID,
     role_id: DataTypes.UUID,
     password: DataTypes.STRING,
     createdAt: DataTypes.DATE,
