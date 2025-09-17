@@ -31,12 +31,12 @@ class SubscriptionController {
 
     async createSubscription(req, res) {
         try {
-            const { companyId, planId, startDate, endDate } = req.body;
-            if (!companyId || !planId || !startDate) {
+            const { company_id, plan_id, start_date, end_date, status } = req.body;
+            if (!company_id || !plan_id || !start_date || !end_date) {
                 return res.status(400).json({ success: false, message: 'companyId, planId, startDate are required' });
             }
 
-            const subscriptionData = { companyId, planId, startDate, endDate };
+            const subscriptionData = { company_id, plan_id, start_date, end_date, status };
             const results = await this.subscriptionServices.createSubscription(subscriptionData);
 
             if (!results.success) return res.status(400).json(results);
@@ -50,13 +50,13 @@ class SubscriptionController {
     async updateSubscription(req, res) {
         try {
             const { subscriptionId } = req.params;
-            const { companyId, planId, startDate, endDate } = req.body;
+            const { company_id, plan_id, start_date, end_date, status } = req.body;
 
-            if (!subscriptionId || !companyId || !planId) {
+            if (!subscriptionId || !company_id || !plan_id) {
                 return res.status(400).json({ success: false, message: 'subscriptionId, companyId, planId are required' });
             }
 
-            const subscriptionData = { companyId, planId, startDate, endDate };
+            const subscriptionData = { company_id, plan_id, start_date, end_date, status };
             const results = await this.subscriptionServices.updateSubscription(subscriptionId, subscriptionData);
 
             if (!results.success) return res.status(400).json(results);

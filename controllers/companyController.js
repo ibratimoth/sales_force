@@ -46,12 +46,12 @@ class CompanyController {
 
     async createCompany(req, res) {
         try {
-            const { name, email, address } = req.body;
+            const { name, email } = req.body;
             if (!name || !email) {
                 return res.status(400).json({ success: false, message: 'name and email are required' });
             }
 
-            const companyData = { name, email, address };
+            const companyData = { name, email };
             const results = await this.companyServices.createCompany(companyData);
 
             if (!results.success) return res.status(400).json(results);
@@ -65,13 +65,13 @@ class CompanyController {
     async updateCompany(req, res) {
         try {
             const { companyId } = req.params;
-            const { name, email, address } = req.body;
+            const { name, email } = req.body;
 
             if (!companyId || !name || !email) {
                 return res.status(400).json({ success: false, message: 'companyId, name, email are required' });
             }
 
-            const companyData = { name, email, address };
+            const companyData = { name, email };
             const results = await this.companyServices.updateCompany(companyId, companyData);
 
             if (!results.success) return res.status(400).json(results);

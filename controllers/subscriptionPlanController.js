@@ -32,12 +32,12 @@ class SubscriptionPlanController {
 
     async createPlan(req, res) {
         try {
-            const { name, price, duration } = req.body;
-            if (!name || !price || !duration) {
-                return res.status(400).json({ success: false, message: 'name, price, duration are required' });
+            const { name, price, billing_cycle } = req.body;
+            if (!name || !price || !billing_cycle) {
+                return res.status(400).json({ success: false, message: 'name, price, billing_cycle are required' });
             }
 
-            const planData = { name, price, duration };
+            const planData = { name, price, billing_cycle };
             const results = await this.subscriptionPlanServices.createPlan(planData);
 
             if (!results.success) return res.status(400).json(results);
@@ -51,13 +51,13 @@ class SubscriptionPlanController {
     async updatePlan(req, res) {
         try {
             const { planId } = req.params;
-            const { name, price, duration } = req.body;
+            const { name, price, billing_cycle } = req.body;
 
-            if (!planId || !name || !price || !duration) {
-                return res.status(400).json({ success: false, message: 'planId, name, price, duration are required' });
+            if (!planId || !name || !price || !billing_cycle) {
+                return res.status(400).json({ success: false, message: 'planId, name, price, billing_cycle are required' });
             }
 
-            const planData = { name, price, duration };
+            const planData = { name, price, billing_cycle };
             const results = await this.subscriptionPlanServices.updatePlan(planId, planData);
 
             if (!results.success) return res.status(400).json(results);

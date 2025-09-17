@@ -31,12 +31,12 @@ class SubscriptionPlanFeatureController {
 
     async createFeature(req, res) {
         try {
-            const { planId, name, description } = req.body;
-            if (!planId || !name) {
-                return res.status(400).json({ success: false, message: 'planId and name are required' });
+            const { plan_id, feature_name, feature_value } = req.body;
+            if (!plan_id || !feature_name) {
+                return res.status(400).json({ success: false, message: 'planId and feature_name are required' });
             }
 
-            const featureData = { planId, name, description };
+            const featureData = { plan_id, feature_name, feature_value };
             const results = await this.featureServices.createFeature(featureData);
 
             if (!results.success) return res.status(400).json(results);
@@ -50,13 +50,13 @@ class SubscriptionPlanFeatureController {
     async updateFeature(req, res) {
         try {
             const { featureId } = req.params;
-            const { planId, name, description } = req.body;
+            const { plan_id, feature_name, feature_value } = req.body;
 
-            if (!featureId || !planId || !name) {
+            if (!featureId || !plan_id || !feature_name) {
                 return res.status(400).json({ success: false, message: 'featureId, planId, and name are required' });
             }
 
-            const featureData = { planId, name, description };
+            const featureData = { plan_id, feature_name, feature_value };
             const results = await this.featureServices.updateFeature(featureId, featureData);
 
             if (!results.success) return res.status(400).json(results);
