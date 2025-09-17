@@ -1,4 +1,4 @@
-const CompanyServices = require('../services/companyServices');
+const CompanyServices = require('../services/companyService');
 
 class CompanyController {
     constructor() {

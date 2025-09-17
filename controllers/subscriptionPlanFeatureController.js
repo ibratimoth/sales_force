@@ -1,4 +1,4 @@
-const SubscriptionPlanFeatureServices = require('../services/subscriptionPlanFeatureServices');
+const SubscriptionPlanFeatureServices = require('../services/subscriptionPlanFeatureService');
 
 class SubscriptionPlanFeatureController {
     constructor() {
