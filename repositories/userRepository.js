@@ -6,7 +6,7 @@ class UserRepositories {
     async getAllUsers() {
         return await User.findAll({
             order: [['createdAt', 'DESC']],
-            attributes: { exclude: ['password']},
+            attributes: { exclude: ['password'] },
             include: [
                 {
                     model: departmentRelation,
@@ -25,7 +25,11 @@ class UserRepositories {
     }
 
     async createUser(userData) {
-        return await User.create(userData);
+        const user = await User.create(userData);
+        const savedUser = await User.findByPk(user.id, {
+            attributes: { exclude: ['password'] }
+        });
+        return savedUser;
     }
 
     async getUserByEmail(email) {

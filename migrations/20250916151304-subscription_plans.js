@@ -11,15 +11,28 @@ module.exports = {
       },
       name: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        defaultValue: 'Basic' // Only one plan
       },
-      price: {
+      base_price: {
         type: Sequelize.DECIMAL(10,2),
-        allowNull: false
+        allowNull: false,
+        defaultValue: 50000
       },
-      billing_cycle: {
-        type: Sequelize.STRING,
-        allowNull: false
+      max_base_agents: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 5
+      },
+      price_per_extra_agent_6_15: {
+        type: Sequelize.DECIMAL(10,2),
+        allowNull: false,
+        defaultValue: 8000
+      },
+      price_per_extra_agent_16_plus: {
+        type: Sequelize.DECIMAL(10,2),
+        allowNull: false,
+        defaultValue: 7000
       },
       createdAt: Sequelize.DATE,
       updatedAt: Sequelize.DATE

@@ -44,7 +44,7 @@ class UserServices {
     async createUser(userData) {
         try {
 
-            const { first_name, last_name, password, email, dep_id, role_id } = userData;
+            const { first_name, last_name, password, email, dep_id, role_id, company_id } = userData;
 
             const user = await this.userRepository.getUserByEmail(email);
 
@@ -54,7 +54,7 @@ class UserServices {
 
             const hashedPassword = await this.hashHelper.hashPassword(password);
 
-            const results = await this.userRepository.createUser({ first_name, last_name, email, password: hashedPassword, dep_id , role_id});
+            const results = await this.userRepository.createUser({ first_name, last_name, email, password: hashedPassword, dep_id , role_id, company_id});
 
             if (results) {
                 return { success: true, message: 'User created successfully', data: results };

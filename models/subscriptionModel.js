@@ -1,7 +1,5 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/db');
-const Company = require('./companyModel');
-const SubscriptionPlan = require('./subscriptionPlanModel');
 
 const Subscription = sequelize.define('subscriptions', {
     id: {
@@ -12,13 +10,21 @@ const Subscription = sequelize.define('subscriptions', {
     },
     company_id: {
         type: DataTypes.UUID,
-        allowNull: false,
-        references: { model: 'companies', key: 'id' }
+        allowNull: false
     },
     plan_id: {
         type: DataTypes.UUID,
+        allowNull: false
+    },
+    agent_count: {
+        type: DataTypes.INTEGER,
         allowNull: false,
-        references: { model: 'subscription_plans', key: 'id' }
+        defaultValue: 1
+    },
+    total_price: {
+        type: DataTypes.DECIMAL(10,2),
+        allowNull: false,
+        defaultValue: 50000
     },
     start_date: {
         type: DataTypes.DATE,
@@ -30,10 +36,9 @@ const Subscription = sequelize.define('subscriptions', {
     },
     status: {
         type: DataTypes.STRING,
-        allowNull: false
-    },
-    createdAt: DataTypes.DATE,
-    updatedAt: DataTypes.DATE
+        allowNull: false,
+        defaultValue: 'active'
+    }
 }, {
     tableName: 'subscriptions',
     timestamps: true

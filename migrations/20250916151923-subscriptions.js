@@ -23,6 +23,16 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
+      agent_count: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 1
+      },
+      total_price: {
+        type: Sequelize.DECIMAL(10,2),
+        allowNull: false,
+        defaultValue: 50000
+      },
       start_date: {
         type: Sequelize.DATE,
         allowNull: false
@@ -33,7 +43,8 @@ module.exports = {
       },
       status: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        defaultValue: 'active'
       },
       createdAt: Sequelize.DATE,
       updatedAt: Sequelize.DATE

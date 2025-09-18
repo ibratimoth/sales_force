@@ -10,18 +10,29 @@ const SubscriptionPlan = sequelize.define('subscription_plans', {
     },
     name: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        defaultValue: 'Basic'
     },
-    price: {
+    base_price: {
         type: DataTypes.DECIMAL(10,2),
-        allowNull: false
+        allowNull: false,
+        defaultValue: 50000
     },
-    billing_cycle: {
-        type: DataTypes.STRING,
-        allowNull: false
+    max_base_agents: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 5
     },
-    createdAt: DataTypes.DATE,
-    updatedAt: DataTypes.DATE
+    price_per_extra_agent_6_15: {
+        type: DataTypes.DECIMAL(10,2),
+        allowNull: false,
+        defaultValue: 8000
+    },
+    price_per_extra_agent_16_plus: {
+        type: DataTypes.DECIMAL(10,2),
+        allowNull: false,
+        defaultValue: 7000
+    }
 }, {
     tableName: 'subscription_plans',
     timestamps: true

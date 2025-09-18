@@ -9,6 +9,8 @@ const userRoutes = require('./routes/userRoutes');
 const departmentRoutes = require('./routes/departmentsRoutes');
 const trackingRoutes = require('./routes/trackingRoutes');
 const agentRoutes = require('./routes/agentNoteRoutes');
+const companyRoutes = require('./routes/companyRoutes');
+const subscriptionRoutes = require('./routes/subscriptionRoutes');
 const http = require('http');
 const { Server } = require('socket.io');
 
@@ -46,6 +48,8 @@ app.use('/user', userRoutes);
 app.use('/department', departmentRoutes);
 app.use('/tracking', trackingRoutes); // 
 app.use('/agent', agentRoutes); // 
+app.use('/company', companyRoutes); // 
+app.use('/api', subscriptionRoutes);
 
 // ------------------ SERVER & SOCKET.IO ------------------
 const server = http.createServer(app);

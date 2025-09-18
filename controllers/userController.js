@@ -97,9 +97,9 @@ class UserController {
     async createUser(req, res) {
         try {
 
-            const { first_name, last_name, email, password, dep_id, role_id } = req.body;
+            const { first_name, last_name, email, password, dep_id, role_id, company_id } = req.body;
 
-            if (!first_name || !last_name || !email || !password || !dep_id || !role_id) {
+            if (!first_name || !last_name || !email || !password || !dep_id || !role_id || !company_id) {
                 return res.status(400).json({
                     status: 400,
                     success: false,
@@ -113,7 +113,8 @@ class UserController {
                 email,
                 dep_id,
                 password,
-                role_id
+                role_id,
+                company_id
             }
 
             const results = await this.userServices.createUser(userData);
@@ -213,11 +214,11 @@ class UserController {
     async UpdateUser(req, res) {
         try {
 
-            const { first_name, last_name, email, password, dep_id, role_id } = req.body;
+            const { first_name, last_name, email, password, dep_id, role_id, company_id } = req.body;
             
             const { userId } = req.params;
 
-            if (!userId || !first_name || !last_name || !email || !dep_id || !role_id) {
+            if (!userId || !first_name || !last_name || !email || !dep_id || !role_id || !company_id) {
                 return res.status(400).json({
                     status: 400,
                     success: false,
@@ -231,7 +232,8 @@ class UserController {
                 email,
                 dep_id,
                 password,
-                role_id
+                role_id,
+                company_id
             }
 
             const results = await this.userServices.updateUser(userId, userData);
